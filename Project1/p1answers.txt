@@ -1,0 +1,19 @@
+
+1.	db2 "select cat  from yrb_category where cat like 'h%'"
+
+2.	db2 "select c.name, max (T.cnt) purchase_count from 	(select P.club, p.cid, COUNT(*) cnt from yrb_purchase P group by P.club, p.cid) T, yrb_customer c where c.cid = t.cid group by c.name, c.cid"
+
+3.	db2 "select title, year, cat from yrb_book b where  (year, cat) in (select min(year), cat from yrb_book group by cat)"
+
+4.	db2 "select b.title from yrb_book b where b.title not in (select bb.title  from yrb_book bb, yrb_offer o  where bb.title = o.title and o.club = 'Readers Digest')"
+5.	db2 "select distinct b.title from yrb_book b where not exists ((select c.club from yrb_club c) except (select o.club from yrb_offer o where o.title = b.title))"
+
+6.	db2 "(select * from yrb_customer) except (select c.cid, c.name, c.city from yrb_customer c, yrb_purchase p where c.cid = p.cid)"
+
+7.	db2 "select distinct c.club, c.desc from yrb_club c, yrb_purchase p, yrb_offer o where c.club = p.club and o.title = p.title and o.year = p.year and o.title = p.title and o.price = (select max (oo.price) from yrb_offer oo where oo.title = o.title and oo.year = o.year)"
+
+8.	db2 "select cast(avg(T.price) as decimal(5,2)) as avg_cost from (select min (o.price) price from yrb_offer o, yrb_book b where o.title = b.title and o.year = b.year group by cat) T"
+
+9.	db2 "select cid, cast    ((float (max(DAYS(when)) - min(DAYS(when)))) / (float (count(distinct(date(when)))-1)) as decimal(7,2)) as avg_gap from yrb_purchase group by cid having count(distinct(date(when)))>1"
+
+10.	db2 "select B1.title, B1.year from yrb_book B1, yrb_book B2 where B1.weight>B2.weight group by B1.title, B1.year having (select count(*) from yrb_book) - count(*) <23 and (select count(*) from yrb_book) - count(*) >21"
